@@ -8,7 +8,12 @@ namespace ToDo_Server.Data.Mapper
     {
         public MapperProfiles()
         {
-            CreateMap<ToDoDTO, ToDo>().ReverseMap();
+            CreateMap<ToDoReadDto, ToDo>().ReverseMap();
+            CreateMap<ToDoUpdateDto, ToDo>().ReverseMap();
+
+            CreateMap<AppRegisterDto, AppUser>().ReverseMap();
+            CreateMap<UserDto, AppUser>().ReverseMap();
+
         }
     }
 }

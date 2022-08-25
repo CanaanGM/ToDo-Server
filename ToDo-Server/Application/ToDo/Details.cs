@@ -15,12 +15,12 @@ namespace ToDo_Server.Application.ToDo
 {
     public class Details
     {
-        public class Query : IRequest<Result<ToDoDTO>>
+        public class Query : IRequest<Result<ToDoReadDto>>
         {
             public Guid Id { get; set; }
         }
 
-        public class Handler : IRequestHandler<Query, Result<ToDoDTO>>
+        public class Handler : IRequestHandler<Query, Result<ToDoReadDto>>
         {
             private readonly DataContext _dataContext;
             private readonly IMapper _mapper;
@@ -32,7 +32,7 @@ namespace ToDo_Server.Application.ToDo
                 _mapper = mapper;
                 _userAccessor = userAccessor;
             }
-            public async Task<Result<ToDoDTO>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<ToDoReadDto>> Handle(Query request, CancellationToken cancellationToken)
             {
                 var user = await _dataContext.Users.FirstOrDefaultAsync(x =>
                      x.Id == _userAccessor.GetUserId());
@@ -42,18 +42,18 @@ namespace ToDo_Server.Application.ToDo
                 if (todo == null)
                     throw new RestException(System.Net.HttpStatusCode.NotFound, new { ToDo = "Not Found" });
                 if (user == null || todo.UserId != user.Id)
-                    return Result<ToDoDTO>.Failure("bitch");
+                    return Result<ToDoReadDto>.Failure("bitch");
 
 
 
 
                 var toDo2Return = await _dataContext.ToDos
-                    .ProjectTo<ToDoDTO>(_mapper.ConfigurationProvider)
+                    .ProjectTo<ToDoReadDto>(_mapper.ConfigurationProvider)
                     .FirstOrDefaultAsync(x => x.Id == request.Id);
 
                 if (todo.UserId == user.Id)
-                    return Result<ToDoDTO>.Success(toDo2Return);
-                return Result<ToDoDTO>.Failure("something went wrong ;=;");
+                    return Result<ToDoReadDto>.Success(toDo2Return);
+                return Result<ToDoReadDto>.Failure("something went wrong ;=;");
             }
         }
     }

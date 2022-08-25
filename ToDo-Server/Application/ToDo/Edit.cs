@@ -18,7 +18,7 @@ namespace ToDo_Server.Application.ToDo
         public class Command : IRequest<Result<Unit>>
         {
             public Guid Id { get; set; }
-            public ToDoDTO ToDoDto { get; set; }
+            public ToDoUpdateDto ToDoDto { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Command>
@@ -26,7 +26,7 @@ namespace ToDo_Server.Application.ToDo
             public CommandValidator()
             {
                 RuleFor(c => c.Id).NotEmpty();
-                RuleFor(x => x.ToDoDto).SetValidator(new ToDoValidator());
+                RuleFor(x => x.ToDoDto).SetValidator(new ToDoUpdateValidator());
             }
         }
 

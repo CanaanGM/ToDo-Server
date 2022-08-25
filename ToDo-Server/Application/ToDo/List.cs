@@ -14,12 +14,12 @@ namespace ToDo_Server.Application.ToDo
 {
     public class List
     {
-        public class Query : IRequest<Result<List<ToDoDTO>>>
+        public class Query : IRequest<Result<List<ToDoReadDto>>>
         {
             public Guid ToDoId { get; set; }
         }
 
-        public class Handler : IRequestHandler<Query, Result<List<ToDoDTO>>>
+        public class Handler : IRequestHandler<Query, Result<List<ToDoReadDto>>>
         {
             private readonly DataContext _dataContext;
             private readonly IMapper _mapper;
@@ -31,17 +31,17 @@ namespace ToDo_Server.Application.ToDo
                 _mapper = mapper;
                 _userAccessor = userAccessor;
             }
-            public async Task<Result<List<ToDoDTO>>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<List<ToDoReadDto>>> Handle(Query request, CancellationToken cancellationToken)
             {
                 var user = await _dataContext.Users.FirstOrDefaultAsync(x => x.Id == _userAccessor.GetUserId());
-                if (user == null) return Result<List<ToDoDTO>>.Failure("Bitch!");
+                if (user == null) return Result<List<ToDoReadDto>>.Failure("Bitch!");
 
                 var todos = await _dataContext.ToDos
                     .Where(x => x.UserId == user.Id)
-                    .ProjectTo<ToDoDTO>(_mapper.ConfigurationProvider)
+                    .ProjectTo<ToDoReadDto>(_mapper.ConfigurationProvider)
                     .ToListAsync();
 
-                return Result<List<ToDoDTO>>.Success(_mapper.Map<List<ToDoDTO>>(todos));
+                return Result<List<ToDoReadDto>>.Success(_mapper.Map<List<ToDoReadDto>>(todos));
             }
         }
     }

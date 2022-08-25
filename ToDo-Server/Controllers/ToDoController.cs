@@ -21,13 +21,13 @@ namespace ToDo_Server.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] ToDoDTO todo)
+        public async Task<IActionResult> Create([FromBody] ToDoReadDto todo)
         {
             return HandleResult(await Mediator.Send(new Create.Command { ToDo= todo}));
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] ToDoDTO todo)
+        public async Task<IActionResult> Update(Guid id, [FromBody] ToDoUpdateDto todo)
         {
 
             return HandleResult(await Mediator.Send(new Edit.Command { Id = id, ToDoDto= todo }));

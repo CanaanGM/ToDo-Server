@@ -15,9 +15,9 @@ namespace ToDo_Server.Application.ToDo
 {
     public class Create 
     {
-        public class Command : IRequest<Result<ToDoDTO>>
+        public class Command : IRequest<Result<ToDoReadDto>>
         {
-            public ToDoDTO? ToDo { get; set; }
+            public ToDoReadDto? ToDo { get; set; }
 
         }
 
@@ -27,7 +27,7 @@ namespace ToDo_Server.Application.ToDo
                 RuleFor(x => x.ToDo).SetValidator(new ToDoValidator());
         }
 
-        public class Handler : IRequestHandler<Command, Result<ToDoDTO>>
+        public class Handler : IRequestHandler<Command, Result<ToDoReadDto>>
         {
             private readonly DataContext _context;
             private readonly IMapper _mapper;
@@ -40,12 +40,12 @@ namespace ToDo_Server.Application.ToDo
                 _userAccessor = userAccessor;
             }
 
-            public async Task<Result<ToDoDTO>> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Result<ToDoReadDto>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var user = await _context.Users.FirstOrDefaultAsync(
                     x => x.UserName == _userAccessor.GetUsername());
 
-                if (user == null) return Result<ToDoDTO>.Failure("Failed to get user");
+                if (user == null) return Result<ToDoReadDto>.Failure("Failed to get user");
 
                 var newTodo = _mapper.Map<Data.Models.ToDo>(request.ToDo );
                 user.ToDos.Add(newTodo);
@@ -54,8 +54,8 @@ namespace ToDo_Server.Application.ToDo
                 var sucess = await _context.SaveChangesAsync() > 0;
 
                 return sucess
-                    ? Result<ToDoDTO>.Success(_mapper.Map<ToDoDTO>(newTodo))
-                    : Result<ToDoDTO>.Failure("Failed to create to do");
+                    ? Result<ToDoReadDto>.Success(_mapper.Map<ToDoReadDto>(newTodo))
+                    : Result<ToDoReadDto>.Failure("Failed to create to do");
             }
         }
     }
