@@ -15,5 +15,8 @@ namespace ToDo_Server.Data.Models
 
         // user goes here ~!
 
+        public string UserId { get; set; } = string.Empty;
+        public AppUser? User { get; set; } 
+
     }
 }
